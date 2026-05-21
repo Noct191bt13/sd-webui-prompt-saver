@@ -8,26 +8,6 @@ from datetime import datetime
 import gradio as gr
 import modules.scripts as scripts
 from modules import script_callbacks, shared
-from modules.paths_internal import data_path
-
-try:
-    _ps_reg = getattr(shared, "state_ext_registry", None)
-    if _ps_reg is None:
-        _ps_reg = []
-        setattr(shared, "state_ext_registry", _ps_reg)
-    for _e in _ps_reg:
-        if _e["ext_id"] == "prompt_saver":
-            break
-    else:
-        _ps_reg.append({
-            "ext_id": "prompt_saver",
-            "label": "Prompt Saver",
-            "elements": [
-                {"elem_id": "ps_saved", "type": "select"},
-            ],
-        })
-except Exception:
-    pass
 
 # ── Config ──────────────────────────────────────────────────────────────
 
