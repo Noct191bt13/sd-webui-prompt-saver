@@ -1,0 +1,10 @@
+{
+  "prompts": [
+    {
+      "name": "Prompt",
+      "text": "@noct,  \n\n\n1girl, adult, solo, red eyes, negative space, asymmetrical composition, long hair, looking at viewer, bags under eyes, looking behind ajar door, surreal, cracks, swirls, abstract background, hair over eyes, bangs, eyes hidden by hair, hidden half of her face behind the door, gradient, dark,\n\n <lora:Noct_anima_v7_1:0.8> ",
+      "favorite": false,
+      "tags": []
+    }
+  ]
+}
