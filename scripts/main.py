@@ -11,6 +11,8 @@ from modules import script_callbacks, shared
 
 # ── Config ──────────────────────────────────────────────────────────────
 
+_pending_override = None
+
 EXTENSION_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SAVER_JSON = os.path.join(EXTENSION_DIR, "prompt-saver.json")
 DEFAULT_EXPORT_DIR = os.path.join(EXTENSION_DIR, "exported_prompts")
@@ -83,6 +85,12 @@ class Script(scripts.Script):
     sorting_priority = 15.1
     def title(self): return "Prompt Saver"
     def show(self, is_img2img): return scripts.AlwaysVisible
+
+    def process(self, p, *args):
+        global _pending_override
+        if _pending_override is not None:
+            p.all_prompts = [_pending_override] * len(p.all_prompts)
+            _pending_override = None
 
     def ui(self, is_img2img):
         tab_name = "img2img" if is_img2img else "txt2img"
@@ -174,11 +182,12 @@ class Script(scripts.Script):
             save_current_btn.click(fn=_save_cur, inputs=[new_name, prompt_box, tags_box], outputs=[saved_dropdown, new_name])
 
             def _gen(name, extra, _cur):
-                if not name or name == PLACEHOLDER: return ""
+                global _pending_override
+                if not name or name == PLACEHOLDER: return
                 p = find(name)
-                if not p: return ""
-                return f"{extra}, {p['text']}" if extra else p["text"]
-            generate_btn.click(fn=_gen, inputs=[saved_dropdown, extra_info, prompt_box], outputs=[prompt_box]).then(
+                if not p: return
+                _pending_override = f"{extra}, {p['text']}" if extra else p["text"]
+            generate_btn.click(fn=_gen, inputs=[saved_dropdown, extra_info, prompt_box], outputs=[]).then(
                 fn=None, _js=f"() => {{const btn = document.querySelector('#{tab_name}_generate'); if(btn) btn.click(); return [];}}", inputs=[], outputs=[])
 
         def _fav(name):
